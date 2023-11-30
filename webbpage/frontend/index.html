@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="index.js"></script>
+    <link rel="stylesheet" href="index.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <canvas id="myChart"></canvas>
+      <form name="form1" id="ipForm" action="#">
+        <input id="ipInput" type="text" name="text1" />
+        <div class="submit">
+          <input
+            type="submit"
+            name="submit"
+            value="reload"
+            onclick="ValidateIPaddress(document.form1.text1)"
+          />
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
