@@ -24,7 +24,7 @@ OLED_SSD1306_Menu_Item::OLED_SSD1306_Menu_Item(char* (*update)(char*, Value*), c
   _label = label;
 }
 
-OLED_SSD1306_Menu_Item::OLED_SSD1306_Menu_Item(bool (*update)(bool, Value*), bool value, char* label) // definition
+OLED_SSD1306_Menu_Item::OLED_SSD1306_Menu_Item(bool (*update)(bool, Value*), bool value, char* label)
 {
   _update.b = update;
   _type = Bool;
@@ -32,7 +32,7 @@ OLED_SSD1306_Menu_Item::OLED_SSD1306_Menu_Item(bool (*update)(bool, Value*), boo
   _label = label;
 }
 
-OLED_SSD1306_Menu_Item::OLED_SSD1306_Menu_Item(void (*update)(Value*), char* value) // definition
+OLED_SSD1306_Menu_Item::OLED_SSD1306_Menu_Item(void (*update)(Value*), char* value)
 {
   _update.v = update;
   _type = Button;
@@ -54,11 +54,12 @@ void OLED_SSD1306_Menu_Item::draw(Adafruit_SSD1306 *display, bool selected, bool
 
     float currentTime = millis();
 
+    // blinks an dot next to the item if it is selected to indicate that it is selected.
     if(selected && hovered && currentTime >= lastDelay + selectedBlinkDelay) {
         display->drawPixel(2, y + 4, BLACK);
         if(currentTime > lastDelay + selectedBlinkDelay + selectedBlinkDuration)
             lastDelay = currentTime;
-    }
+    } 
 
     display->setCursor(5, y);
 
@@ -160,7 +161,7 @@ int OLED_SSD1306_Menu::calculateInitialOffset()
     for (uint8_t i = 0; i < _itemCount; i++)
     {
         uint8_t y = i * 10 + nextOffset;
-        uint8_t height = 10; //? replace with method to get height(without rendering the item I mean)
+        uint8_t height = 10;
         nextOffset = height;
         if(_hovered != i)
             continue;
@@ -168,7 +169,7 @@ int OLED_SSD1306_Menu::calculateInitialOffset()
             int nextOffset2 = 0;
             for(uint8_t j = i - 1; j > 0; j--) 
             {
-                int height2 = 10; //? replace with method to get height(without rendering the item I mean)
+                int height2 = 10;
                 nextOffset2 = nextOffset2 - height2;
 
                 if(y + height + nextOffset2 <= _height) 
@@ -187,20 +188,19 @@ void OLED_SSD1306_Menu::_draw()
     _display->clearDisplay();
     _display->setCursor(0, 0);
     _display->setTextColor(WHITE);
-    _display->print(_hovered);//String(_hovered));
+    _display->print(_hovered);
 
     uint8_t titleHeight = 10;
 
     drawCentreString(_display, label, _width, 0);
 
-    int initialOffset = calculateInitialOffset();
+    int initialOffset = calculateInitialOffset(); //the initial offset for items.
 
     int offset = initialOffset;
 
     for (uint8_t i = 0; i < _itemCount; i++)
     {
         OLED_SSD1306_Menu_Item* item = _items[i];
-
 
         uint8_t height = 10;
 
@@ -232,10 +232,10 @@ void OLED_SSD1306_Menu::update()
 {
     if(_selected) {
         OLED_SSD1306_Menu_Item* selectedItem = _items[_hovered];
-        selectedItem->update(true);
+        selectedItem->update(true); //updates the selected item
     }
 
-    _draw();
+    _draw(); //redraws the menu
 }
 
 void OLED_SSD1306_Menu::swap(int index1, int index2)

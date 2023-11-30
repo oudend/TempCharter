@@ -48,6 +48,10 @@ class OLED_SSD1306_Menu_Item
         * @param *display - pointer to the oled display of type Adafruit_SSD1306.
         */
         void draw(Adafruit_SSD1306 *display, bool selected, bool hovered, int y, int width);
+        /**
+        * @brief Updates the value of the selected input or triggers the function of the selected button.
+        * @param selected - an boolean indicating whether or not the item is selected.
+        */
         void update(bool selected);
         /**
         * @brief Gets the current value stored in the menu in the form of the Value struct(value.c = char* value, value.i = int value, value.f = float value, value.b = bool value).
@@ -90,15 +94,22 @@ class OLED_SSD1306_Menu_Item
 class OLED_SSD1306_Menu
 {
     private:
-        OLED_SSD1306_Menu_Item** _items; //the variable that stores all the items
+        OLED_SSD1306_Menu_Item** _items; //the variable that stores all the items of the menu.
         Adafruit_SSD1306* _display;
         uint8_t _itemCount = 0;
         uint8_t _hovered;
         int _width;
         int _height;
         bool _selected;
-        void _draw(); //clear the entire screen and redraw menu centered around selected input type
-        int calculateInitialOffset(); //calculates the initial offset of the menu before it gets rendered, this enables simple scrolling.
+        /**
+        * @brief clear the entire screen and redraw menu centered around selected input type.
+        */
+        void _draw();
+        /**
+        * @brief calculates the initial offset of the menu before it gets rendered, this enables simple scrolling.
+        * @return Returns the offset.
+        */
+        int calculateInitialOffset();
 
     public:
         char* label;

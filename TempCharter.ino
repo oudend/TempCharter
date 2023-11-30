@@ -30,9 +30,9 @@ DHT dht(DHTPIN, DHTTYPE);
 
 #define IP "192.168.0.124" // the Ip for the server on the lan(needs to be updated regularly unless a static ip is set up on the router or something to that effect)
 
-#define DEBUGMODE true
+#define DEBUGMODE true // whether or not to log anything to the serial monitor
 
-OLED_SSD1306_Chart display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET); // initialize the display
+OLED_SSD1306_Chart display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET); // initialize the oled display
 
 // initialize the menus
 OLED_SSD1306_Menu mainMenu(display, "TempCharter", 2, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -171,7 +171,6 @@ void chartSetup(int measureIndex)
 
     display.setYLabelsVisible(true);
     display.setAxisDivisionsInc(3, 3); // Each 12 px a division will be painted in X axis and each 6px in Y axis
-    // display.setPlotMode(SINGLE_PLOT_MODE); // Set single plot mode
     display.setPointGeometry(POINT_GEOMETRY_NONE);
     display.setLineThickness(LIGHT_LINE);
     display.drawChart(); // Update the buffer to draw the cartesian chart
@@ -219,7 +218,7 @@ void startRecording(Value *capture)
     }
     else
     {
-        sensorData.println(minutes);      // metadata used to reconstruct the data.
+        sensorData.println(minutes);      // metadata used to reconstruct the data when reviewing.
         sensorData.println(measureIndex); // metadata for the type of measuring used to reconstruct the data and also when sending with the esp.
     }
 
@@ -508,6 +507,7 @@ float inputFloatUpdate(float value, float min, float max, Value *capture)
  * @param value the value to change.
  * @param min the minimum value.
  * @param max the maximum value.
+ * @return the updated value
  */
 int inputIntUpdate(int value, int min, int max)
 {
@@ -526,6 +526,7 @@ int inputIntUpdate(int value, int min, int max)
 /**
  * @brief convenient function for changing a selected bool value in a menu.
  * @param capture Value struct with some capture data(is not used by the function but is required by the menu library).
+ * @return the updated value
  */
 bool inputBoolUpdate(bool value, Value *capture)
 {
@@ -582,6 +583,9 @@ char *measureOptionGoThrough(char *value, Value *capture)
     return measureOptions[measureIndex];
 }
 
+/**
+ * @brief function that initializes all the menus and adds all their buttons and functionality.
+ */
 void setupMenus()
 {
     OLED_SSD1306_Menu_Item *reviewSubmenuButton = new OLED_SSD1306_Menu_Item([](Value *capture) -> void
@@ -664,7 +668,7 @@ void setup()
     display.setCursor(0, 0);
     display.setTextColor(WHITE);
 
-    display.print("awaiting Serial");
+    display.print("awaiting Serial"); // will barely be visible if DEBUGMODE is off
 
     display.display();
 
@@ -702,16 +706,14 @@ void setup()
     mainMenu.update();
 }
 
+/**
+ * @brief logs the output of Serial1 which the esp uses to the Serial and vice versa.
+ */
 void logEspOutput()
 {
     if (Serial1.available() > 0)
     {
         Serial.print((char)Serial1.read());
-
-        // while (Serial.available())
-        // {
-        //     Serial.read();
-        // }
     }
     if (Serial.available() > 0)
     {
@@ -720,7 +722,6 @@ void logEspOutput()
     }
 }
 
-float realPosition = 0;
 void loop()
 {
     //? debug the Serial1 port(for the esp8266)
